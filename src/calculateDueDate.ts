@@ -10,10 +10,13 @@ export function calculateDueDate(
 	// Calculate how many full working days the turnaround time spans
 	let remainingDays = Math.floor(turnaroundHours / hoursPerDay); // Full working days
 	// Calculate the leftover hours to be added after full working days
-	let remainingHours = turnaroundHours % hoursPerDay; // Hours beyond full days
-
+	let remainingHours = Math.floor(turnaroundHours % hoursPerDay); // Hours beyond full days
+	let remainingMinutes =
+		((turnaroundHours % hoursPerDay) - remainingHours) * 60;
 	// Start by creating a new date object from the submit date
 	let dueDate = new Date(submitDate);
+
+	dueDate.setMinutes(dueDate.getMinutes() + remainingMinutes);
 
 	// Add the remaining hours to the submit date
 	dueDate.setHours(dueDate.getHours() + remainingHours);
