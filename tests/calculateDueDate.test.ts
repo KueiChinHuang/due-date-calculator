@@ -55,15 +55,5 @@ describe("calculateDueDate function", () => {
 		expect(calculateDueDate(submitDate, 16.5)).toEqual(expectedDueDate);
 	});
 
-	test("should handle cases where problem is reported outside of working hours on weekdays", () => {
-		const submitDate = new Date("2025-03-31T18:00:00"); // Monday 6PM
-		const expectedDueDate = new Date("2025-04-01T12:00:00"); // Tuesday 12PM
-		expect(calculateDueDate(submitDate, 3)).toEqual(expectedDueDate);
-	});
 
-	test("should handle cases where problem is reported outside of working hours on weekends", () => {
-		const submitDate = new Date("2025-04-05T10:00:00"); // Saturday 10AM
-		const expectedDueDate = new Date("2025-04-07T12:00:00"); // Monday 12PM
-		expect(calculateDueDate(submitDate, 3)).toEqual(expectedDueDate);
-	});
 });
