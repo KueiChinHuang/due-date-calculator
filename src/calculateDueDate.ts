@@ -16,6 +16,16 @@ export function calculateDueDate(
 	// Start by creating a new date object from the submit date
 	let dueDate = new Date(submitDate);
 
+	while (dueDate.getDay() === 6 || dueDate.getDay() === 0) {
+		dueDate.setDate(dueDate.getDate() + 1);
+		dueDate.setHours(workingHoursStart, 0, 0, 0);
+	}
+
+	if (dueDate.getHours() > workingHoursEnd) {
+		remainingDays++; // Add one more full working day
+		dueDate.setHours(workingHoursStart, 0, 0, 0);
+	}
+
 	dueDate.setMinutes(dueDate.getMinutes() + remainingMinutes);
 
 	// Add the remaining hours to the submit date
