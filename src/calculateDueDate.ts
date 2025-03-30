@@ -2,45 +2,39 @@ export function calculateDueDate(
 	submitDate: Date,
 	turnaroundHours: number
 ): Date {
-	// Define working hours: 9 AM to 5 PM for a typical workday
+	// Define standard working hours: 9 AM to 5 PM (8-hour workday)
 	const workingHoursStart = 9;
 	const workingHoursEnd = 17;
 	const hoursPerDay = workingHoursEnd - workingHoursStart;
 
-	// Calculate remaining days, hours, and minutes
-	let remainingDays = Math.floor(turnaroundHours / hoursPerDay); 
-	let remainingHours = Math.floor(turnaroundHours % hoursPerDay); 
-	let remainingMinutes =
-		((turnaroundHours % hoursPerDay) - remainingHours) * 60;
+	// Calculate full working days and remaining fractional hours
+	let remainingDays = Math.floor(turnaroundHours / hoursPerDay); // Full days covered by turnaround time
+	let remainingHours = Math.floor(turnaroundHours % hoursPerDay); // Hours that do not complete a full day
+	let remainingMinutes = (turnaroundHours % 1) * 60; // Convert any fraction of an hour into minutes
 
-	// Create a dueDate object from the submit date
+	// Create a new date object from the submit date
 	let dueDate = new Date(submitDate);
 
-	// Add the remaining minutes to the due date
-	dueDate.setMinutes(dueDate.getMinutes() + remainingMinutes);
+	// Add the remaining minutes and hours to the due date
+	dueDate.setMinutes(dueDate.getMinutes() + remainingMinutes); // Set remaining minutes
+	dueDate.setHours(dueDate.getHours() + remainingHours); // Set remaining hours
 
-	// Add the remaining hours to the due date
-	dueDate.setHours(dueDate.getHours() + remainingHours);
-
-	// Handle hour of dueDate
-	// If the calculated hour exceeds the work hour (5 PM), adjust accordingly
-	if (dueDate.getHours() > workingHoursEnd) {
-		remainingDays++; 
-		dueDate.setHours(dueDate.getHours() - hoursPerDay);
+	// If hours exceed the working day (5 PM), adjust to the next working day
+	if (dueDate.getHours() >= workingHoursEnd) {
+		remainingDays++; // Add an additional working day
+		dueDate.setHours(dueDate.getHours() - hoursPerDay); // Adjust working hour
 	}
 
-	// Handle date of dueDate
-	// Set the correct due date by skipping weekends and counting valid workdays
+	// Skip weekends (Saturday = 6, Sunday = 0) while calculating the due date
 	while (remainingDays > 0) {
-		// Move to the next day
-		dueDate.setDate(dueDate.getDate() + 1);
+		dueDate.setDate(dueDate.getDate() + 1); // Move to the next day
 
-		// If the new day is a weekend (Saturday or Sunday), skip it and check the next day
+		// If the day is a weekend (Saturday or Sunday), skip it and continue with the next day
 		if (dueDate.getDay() === 6 || dueDate.getDay() === 0) {
-			continue; // Skip weekends (no work on Saturday or Sunday)
+			continue; // Skip weekends
 		}
 
-		// Decrease the remaining days after a valid working day
+		// Subtract one day for each valid workday
 		remainingDays--;
 	}
 
