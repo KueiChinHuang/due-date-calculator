@@ -7,27 +7,29 @@ export function calculateDueDate(
 	const workingHoursEnd = 17;
 	const hoursPerDay = workingHoursEnd - workingHoursStart;
 
-	// Calculate how many full working days the turnaround time spans
-	let remainingDays = Math.floor(turnaroundHours / hoursPerDay); // Full working days
-	// Calculate the leftover hours to be added after full working days
-	let remainingHours = Math.floor(turnaroundHours % hoursPerDay); // Hours beyond full days
+	// Calculate remaining days, hours, and minutes
+	let remainingDays = Math.floor(turnaroundHours / hoursPerDay); 
+	let remainingHours = Math.floor(turnaroundHours % hoursPerDay); 
 	let remainingMinutes =
 		((turnaroundHours % hoursPerDay) - remainingHours) * 60;
-	// Start by creating a new date object from the submit date
+
+	// Create a dueDate object from the submit date
 	let dueDate = new Date(submitDate);
 
+	// Add the remaining minutes to the due date
 	dueDate.setMinutes(dueDate.getMinutes() + remainingMinutes);
 
-	// Add the remaining hours to the submit date
+	// Add the remaining hours to the due date
 	dueDate.setHours(dueDate.getHours() + remainingHours);
 
-	// If the calculated time exceeds the current workday (5 PM), adjust the due date
+	// Handle hour of dueDate
+	// If the calculated hour exceeds the work hour (5 PM), adjust accordingly
 	if (dueDate.getHours() > workingHoursEnd) {
-		remainingDays++; // Add one more full working day
-		// Set the time to the start of the next working day (9 AM)
+		remainingDays++; 
 		dueDate.setHours(dueDate.getHours() - hoursPerDay);
 	}
 
+	// Handle date of dueDate
 	// Set the correct due date by skipping weekends and counting valid workdays
 	while (remainingDays > 0) {
 		// Move to the next day

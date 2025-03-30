@@ -55,5 +55,11 @@ describe("calculateDueDate function", () => {
 		expect(calculateDueDate(submitDate, 16.5)).toEqual(expectedDueDate);
 	});
 
+	test("should handle due date with cross-weekend, cross-day, and cross-hour turnaround", () => {
+		const submitDate = new Date("2025-03-29T14:32:00"); // Friday 2:32PM
+		const expectedDueDate = new Date("2025-04-01T15:02:00"); // Tuesday 3:02PM
+		expect(calculateDueDate(submitDate, 16.5)).toEqual(expectedDueDate);
+	});
+
 
 });
